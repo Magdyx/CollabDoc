@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_02_173013) do
+ActiveRecord::Schema.define(version: 2021_01_03_131132) do
 
   create_table "documents", force: :cascade do |t|
     t.string "title"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2021_01_02_173013) do
     t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "revision"
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
@@ -25,6 +26,25 @@ ActiveRecord::Schema.define(version: 2021_01_02_173013) do
     t.integer "user_id", null: false
     t.integer "document_id", null: false
     t.index ["user_id", "document_id"], name: "index_documents_users_on_user_id_and_document_id"
+  end
+
+  create_table "instructions", force: :cascade do |t|
+    t.integer "kind"
+    t.string "character"
+    t.integer "position"
+    t.integer "operation_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["operation_id"], name: "index_instructions_on_operation_id"
+  end
+
+  create_table "operations", force: :cascade do |t|
+    t.integer "revision"
+    t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "document_id"
+    t.index ["user_id"], name: "index_operations_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
