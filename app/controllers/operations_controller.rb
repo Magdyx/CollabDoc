@@ -1,4 +1,5 @@
 class OperationsController < ApplicationController
+  load_and_authorize_resource
   def create
     @document = @operation.document
 
@@ -15,6 +16,8 @@ class OperationsController < ApplicationController
   private
 
   def operation_params
+    params[:operation] = JSON.parse(params[:operation])
+    puts(params)
     params.require(:operation).permit(:revision, :document_id, instruction: [:kind, :character, :position])
   end
 

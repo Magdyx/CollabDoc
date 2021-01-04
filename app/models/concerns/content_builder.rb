@@ -6,7 +6,7 @@ module ContentBuilder
   end
 
   def update_content(instruction)
-    send(instruction.kind)
+    send(instruction.kind + "_content")
     update_revision
     save!
   end

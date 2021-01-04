@@ -1,4 +1,4 @@
 <%= form_with model: @document do |form| %>
   <%= form.text_field :title %></br>
-  <%= form.text_area :content, id: "story" %>
+  <%= form.text_area :content, id: "story", data: {revision: @document.revision, id: @document.id} %>
 <% end %>
