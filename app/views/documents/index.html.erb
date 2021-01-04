@@ -1,0 +1,5 @@
+<% @documents.each do |document| %>
+  <%= link_to document.title, document_path(document) %>
+  <br/>
+<% end %>
+<%= link_to "create", documents_path, method: :post %>
