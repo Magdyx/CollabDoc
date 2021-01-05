@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_03_131132) do
+ActiveRecord::Schema.define(version: 2021_01_05_134457) do
 
   create_table "documents", force: :cascade do |t|
     t.string "title"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 2021_01_03_131132) do
   end
 
   create_table "instructions", force: :cascade do |t|
-    t.integer "kind"
+    t.integer "status"
     t.string "character"
     t.integer "position"
     t.integer "operation_id"

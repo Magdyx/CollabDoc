@@ -1,4 +1,4 @@
 class Instruction < ApplicationRecord
-    enum kind: [:insert, :delete]
+    enum status: [:ins, :del]
     belongs_to :operation
 end
