@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
     function buildOperation (instructions) {
         var operation = {};
-        operation.instructions = instructions;
+        operation.instructions_attributes = instructions;
         operation.document_id = mainArea.dataset.id;
         operation.revision = mainArea.dataset.revision;
         return operation;
@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded",function(){
     
     function buildInstruction (event) {
         var instruction = {};
-        instruction.kind = event.inputType == "insertText" ? 0 : 1;
-        instruction.position = mainArea.selectionStart - (1 - instruction.kind);
+        instruction.status = event.inputType == "insertText" ? 0 : 1;
+        instruction.position = mainArea.selectionStart - (1 - instruction.status);
         instruction.character = event.data;
         return instruction;
     }

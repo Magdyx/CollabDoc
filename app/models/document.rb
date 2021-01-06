@@ -6,5 +6,5 @@ class Document < ApplicationRecord
   has_many :documents_users, dependent: :destroy
   has_many :users, through: :documents_users
 
-  attribute :revision, :integer, default: 0
+  attribute :revision, :integer, default: 1
 end

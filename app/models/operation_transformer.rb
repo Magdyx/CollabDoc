@@ -10,7 +10,7 @@ module OperationTranformer
   def apply_transform(operation, instructions)
     operation.instructions.each do |instructionA|
       instructions.each do |instructionB|
-        send("transform#{instructionA.status.capitalize}#{instructionB.status.capitalize}")
+        send("transform_#{instructionA.status}_#{instructionB.status}", instructionA, instructionB)
       end
       instructionA.save!
     end

@@ -1,26 +1,26 @@
 module InstructionTransformer
-  def transformInsIns(instructionA, instructionB)
+  def transform_ins_ins(instructionA, instructionB)
     if instructionA.position > instructionB.position
       instructionA.position = instructionA.position + 1
     end
     instructionA.save!
   end
 
-  def transformInsDel(instructionA, instructionB)
+  def transform_ins_del(instructionA, instructionB)
     if instructionA.position > instructionB.position
       instructionA.position = instructionA.position - 1
     end
     instructionA.save!
   end
 
-  def transformDelIns(instructionA, instructionB)
+  def transform_del_ins(instructionA, instructionB)
     if instructionA.position > instructionB.position
       instructionA.position = instructionA.position + 1
     end
     instructionA.save!
   end
 
-  def transformDelDel(instructionA, instructionB)
+  def transform_del_del(instructionA, instructionB)
     if instructionA.position > instructionB.position
       instructionA.position = instructionA.position + 1
       instructionA.save!

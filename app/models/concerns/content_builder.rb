@@ -6,20 +6,20 @@ module ContentBuilder
   end
 
   def update_content(instruction)
-    send(instruction.kind + "_content")
+    send(instruction.status + "_content", instruction)
     update_revision
     save!
   end
 
-  def insert_content(instruction)
+  def ins_content(instruction)
     content.insert(instruction.position, instruction.character)
   end
 
-  def delete_content(instruction)
+  def del_content(instruction)
     content.slice!(instruction.position)
   end
 
   def update_revision
-    revision = revision + 1
+    self.revision = self.revision + 1
   end
 end
