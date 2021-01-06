@@ -27,6 +27,6 @@ class OperationsController < ApplicationController
   end
 
   def broadcast_operation
-
+    OperationsChannel.broadcast_to(@document, @operation)
   end
 end

@@ -4,7 +4,7 @@ module ApplicationCable
     rescue_from StandardError, with: :report_error
 
     def connect
-      self.current_user = find_verified_user
+      #self.current_user = find_verified_user
     end
 
     private
