@@ -5,12 +5,20 @@ document.addEventListener("DOMContentLoaded", function () {
   var mainArea = document.getElementById("story");
   var documentId = mainArea.dataset.id;
   var authorId = mainArea.dataset.user_id;
-  var BufferKey = "\"liveEditorBuffer\"";
-  var pendingOperationKey = "";
+  var bufferKey = "liveEditorBuffer";
+  var pendingOperationKey = "pendingOperation";
 
   mainArea.addEventListener("input", (event) => {
-    sendOperation(buildOperation([buildInstruction(event)]));
+    var instruction = buildInstruction(event);
+    if (isPending()) {
+      sendOperation(buildOperation([instruction]));
+    }
+    else {
+      insertToBuffer(instruction);
+    }
   });
+
+  initializeBuffer();
 
   function buildOperation(instructions) {
     var operation = {};
@@ -32,22 +40,23 @@ document.addEventListener("DOMContentLoaded", function () {
     var myJSON = JSON.stringify(operation);
     var formData = new FormData();
     formData.append("operation", myJSON);
-    console.log(myJSON);
     var xhttp = new XMLHttpRequest();
     xhttp.open("Post", "/operations", true);
     xhttp.setRequestHeader("X-CSRF-Token", getMeta("csrf-token"));
     xhttp.send(formData);
+    createPendingOperation(operation);
   }
 
   function insertToBuffer(instruction) {
-    var instructions = JSON.parse(window.localStorage.getItem("liveEditorBuffer"));
+    var instructions = JSON.parse(window.localStorage.getItem(bufferKey));
     instructions.push(instruction);
-    window.localStorage.setItem("liveEditorBuffer", JSON.stringify(instructions));
+    window.localStorage.setItem(bufferKey, JSON.stringify(instructions));
   }
 
   function sendInstructionsInBuffer() {
-    var instructions = JSON.parse(window.localStorage.getItem("liveEditorBuffer"));
+    var instructions = JSON.parse(window.localStorage.getItem(bufferKey));
     sendOperation(buildOperation(instructions));
+    window.localStorage.setItem(bufferKey, JSON.stringify([]));
   }
 
   consumer.subscriptions.create({channel: "OperationsChannel", id: documentId}, {
@@ -56,28 +65,76 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     disconnected() {
-      // Called when the subscription has been terminated by the server
+      console.log("Disconnected");
     },
 
     received(data) {
       console.log(data);
+      updateRevision(data);
       if(data["user_id"] == authorId) {
         removePendingOperation();
+        sendInstructionsInBuffer();
       }
-      sendInstructionsInBuffer();
+      else {
+        if (!isBufferEmpty()) {
+          applyTransformation(data)
+        }
+        updateDocument(data);
+      }
     }
   });
 
-  function removePendingOperation() {
+  function updateDocument (operation) {
+    operation.instructions.forEach(ins => {
+      if (ins.status == "ins") {
+        insertAt(ins.character, position);
+      }
+      else {
+        deleteAt(position);
+      }
+    }) 
+  }
 
+  function insertAt (c, pos) {
+    const value = mainArea.value;
+    mainArea.value = value.slice(0, pos) + c + value.slice(pos);
+  }
+
+  function deleteAt (pos) {
+    const value = mainArea.value;
+    mainArea.value = value.slice(0, pos) + value.slice(pos + 1);
+  }
+
+  function updateRevision (operation) {
+    mainArea.dataset.revision = operation.revision;
+  }
+
+  function applyTransformation(operation) {
+
+  }
+
+  function isBufferEmpty() {
+    return JSON.parse(window.localStorage.getItem(bufferKey)) == [];
+  }
+
+  function isPending () {
+    return window.localStorage.getItem(pendingOperationKey) == null;
+  }
+
+  function createPendingOperation(operation) {
+    window.localStorage.setItem(pendingOperationKey, JSON.stringify(operation));
+  }
+  
+  function removePendingOperation() {
+    window.localStorage.removeItem(pendingOperationKey);
   }
 
   function initializeBuffer() {
-    window.localStorage.setItem("liveEditorBuffer", []);
+    window.localStorage.setItem(bufferKey, JSON.stringify([]));
   }
 
   function DeleteBuffer() {
-    window.localStorage.removeItem(buffer)
+    window.localStorage.removeItem(bufferKey);
   }
 });
 
@@ -90,6 +147,6 @@ function getMeta(metaName) {
       return metas[i].getAttribute('content');
     }
   }
-
+  
   return '';
 }

@@ -7,7 +7,7 @@ import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
-import 'components'
+import "../components/live_editor"
 
 Rails.start()
 Turbolinks.start()

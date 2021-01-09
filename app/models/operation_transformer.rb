@@ -12,7 +12,6 @@ module OperationTranformer
       instructions.each do |instructionB|
         send("transform_#{instructionA.status}_#{instructionB.status}", instructionA, instructionB)
       end
-      instructionA.save!
     end
   end
 end

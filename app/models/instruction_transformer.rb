@@ -22,10 +22,11 @@ module InstructionTransformer
 
   def transform_del_del(instructionA, instructionB)
     if instructionA.position > instructionB.position
-      instructionA.position = instructionA.position + 1
+      instructionA.position = instructionA.position - 1
       instructionA.save!
     elsif instructionA.position == instructionB.position
       # instruction need to be deleted as duplicate
+      instructionA.destroy
     end
   end
 end

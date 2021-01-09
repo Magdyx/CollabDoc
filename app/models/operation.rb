@@ -1,9 +1,13 @@
 class Operation < ApplicationRecord
-    belongs_to :user
-    belongs_to :document
-    has_many :instructions, dependent: :destroy
+	belongs_to :user
+	belongs_to :document
+	has_many :instructions, dependent: :destroy
 
-    accepts_nested_attributes_for :instructions
+	accepts_nested_attributes_for :instructions
 
-    scope :operations_later_than, ->(rev) { where("revision > ?", rev).pluck(:id)}
+	scope :operations_later_than, ->(rev) { where("revision > ?", rev).pluck(:id)}
+
+	def as_json(options = {})
+		super(include: :instructions)
+	end
 end

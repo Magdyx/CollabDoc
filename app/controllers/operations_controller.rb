@@ -23,7 +23,7 @@ class OperationsController < ApplicationController
   end
 
   def transform_operation
-    OperationTranformer.transform_operation(@operation, @document)
+    #OperationTranformer.transform_operation(@operation, @document)
   end
 
   def broadcast_operation
