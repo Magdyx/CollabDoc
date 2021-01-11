@@ -4,13 +4,15 @@ document.addEventListener("DOMContentLoaded", function () {
   var currentRevision = 0;
   var mainArea = document.getElementById("story");
   var documentId = mainArea.dataset.id;
-  var authorId = mainArea.dataset.user_id;
+  var authorId = mainArea.dataset.userId;
   var bufferKey = "liveEditorBuffer";
   var pendingOperationKey = "pendingOperation";
+  removePendingOperation();
+  DeleteBuffer();
 
   mainArea.addEventListener("input", (event) => {
     var instruction = buildInstruction(event);
-    if (isPending()) {
+    if (!isPending()) {
       sendOperation(buildOperation([instruction]));
     }
     else {
@@ -48,13 +50,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function insertToBuffer(instruction) {
-    var instructions = JSON.parse(window.localStorage.getItem(bufferKey));
+    var instructions = getBuffer();
     instructions.push(instruction);
     window.localStorage.setItem(bufferKey, JSON.stringify(instructions));
   }
 
+  function getBuffer() {
+    return JSON.parse(window.localStorage.getItem(bufferKey));
+  }
+
   function sendInstructionsInBuffer() {
     var instructions = JSON.parse(window.localStorage.getItem(bufferKey));
+    if (instructions.length === 0) return;
     sendOperation(buildOperation(instructions));
     window.localStorage.setItem(bufferKey, JSON.stringify([]));
   }
@@ -69,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     received(data) {
-      console.log(data);
       updateRevision(data);
       if(data["user_id"] == authorId) {
         removePendingOperation();
@@ -87,10 +93,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateDocument (operation) {
     operation.instructions.forEach(ins => {
       if (ins.status == "ins") {
-        insertAt(ins.character, position);
+        insertAt(ins.character, ins.position);
       }
       else {
-        deleteAt(position);
+        deleteAt(ins.position);
       }
     }) 
   }
@@ -110,15 +116,26 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function applyTransformation(operation) {
-
+    getBuffer().forEach(ins => {
+      operation.instructions.forEach(curr => {
+        if(ins.position < curr.position) {
+          if (ins.status == "del") {
+            curr.position--;
+          }
+          else {
+            curr.position++;
+          }
+        }
+      });
+    });
   }
 
   function isBufferEmpty() {
-    return JSON.parse(window.localStorage.getItem(bufferKey)) == [];
+    return JSON.parse(window.localStorage.getItem(bufferKey)).length === 0;
   }
 
   function isPending () {
-    return window.localStorage.getItem(pendingOperationKey) == null;
+    return window.localStorage.getItem(pendingOperationKey) != null;
   }
 
   function createPendingOperation(operation) {

@@ -1,5 +1,5 @@
 module OperationTranformer
-  include InstructionTransformer
+  extend ActiveSupport::Concern
 
   def transform_operation(operation, document)
     new_operations_ids = document.operations.operations_later_than(operation.revision)

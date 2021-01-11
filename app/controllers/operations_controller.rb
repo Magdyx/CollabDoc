@@ -1,4 +1,7 @@
 class OperationsController < ApplicationController
+  include InstructionTransformer
+  include OperationTranformer
+  
   load_and_authorize_resource
 
   def create
@@ -23,7 +26,7 @@ class OperationsController < ApplicationController
   end
 
   def transform_operation
-    #OperationTranformer.transform_operation(@operation, @document)
+    OperationTranformer.transform_operation(@operation, @document)
   end
 
   def broadcast_operation

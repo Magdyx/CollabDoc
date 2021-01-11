@@ -1,4 +1,5 @@
-module InstructionTransformer
+module InstructionTransformer 
+  extend ActiveSupport::Concern
   def transform_ins_ins(instructionA, instructionB)
     if instructionA.position > instructionB.position
       instructionA.position = instructionA.position + 1
