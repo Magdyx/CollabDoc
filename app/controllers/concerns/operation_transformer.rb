@@ -1,4 +1,4 @@
-module OperationTranformer
+module OperationTransformer
   extend ActiveSupport::Concern
 
   def transform_operation(operation, document)
