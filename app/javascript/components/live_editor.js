@@ -91,14 +91,18 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function updateDocument (operation) {
+    var curPos = mainArea.selectionStart;
     operation.instructions.forEach(ins => {
       if (ins.status == "ins") {
         insertAt(ins.character, ins.position);
+        if (ins.position < curPos) curPos++; 
       }
       else {
         deleteAt(ins.position);
+        if (ins.position < curPos) curPos--;
       }
-    }) 
+    });
+    mainArea.setSelectionRange(curPos, curPos);
   }
 
   function insertAt (c, pos) {

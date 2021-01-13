@@ -1,15 +1,14 @@
 class OperationsController < ApplicationController
   include InstructionTransformer
-  include OperationTranformer
+  include OperationTransformer
   
   load_and_authorize_resource
 
   def create
     @operation.user = current_user
     @document = @operation.document
-
     if @document.revision != @operation.revision
-      transform_operation
+      transform
     end
 
     @document.apply_operation(@operation)
@@ -25,8 +24,8 @@ class OperationsController < ApplicationController
     params.require(:operation).permit(:revision, :document_id, instructions_attributes: [:status, :character, :position])
   end
 
-  def transform_operation
-    OperationTranformer.transform_operation(@operation, @document)
+  def transform
+    transform_operation(@operation, @document)
   end
 
   def broadcast_operation
