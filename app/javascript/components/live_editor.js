@@ -76,10 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     received(data) {
-      updateRevision(data);
       if(data["user_id"] == authorId) {
         removePendingOperation();
-        sendInstructionsInBuffer();
       }
       else {
         if (!isBufferEmpty()) {
@@ -87,6 +85,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         updateDocument(data);
       }
+      sendInstructionsInBuffer();
+      updateRevision(data);
     }
   });
 
