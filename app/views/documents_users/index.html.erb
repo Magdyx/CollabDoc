@@ -1,0 +1,6 @@
+<% @document.users.each do |user| %>
+  <%= user.email%>
+  <%= link_to "destroy", document_documents_user_path(@document, user.id) , method: :delete %>
+  <br/>
+<% end %>
+<%= link_to  "new editor", new_document_documents_user_url(@document) %>

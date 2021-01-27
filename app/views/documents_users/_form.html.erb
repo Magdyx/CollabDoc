@@ -1,0 +1,4 @@
+<%= form_with model: @documents_user, url: document_documents_users_path(@document) do |f| %>
+  <%= f.select :user_id, options_for_select(@document.users_to_add.pluck(:email, :id)) %>
+  <%= f.submit "Submit", disable_with: 'Submiting...' %>
+<% end %>
