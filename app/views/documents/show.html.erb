@@ -1,3 +1,6 @@
+<% if can? :update, DocumentsUser %>
+  <%= link_to  "editors", document_documents_users_url(@document) %>
+<% end%>
 <%= form_with model: @document do |form| %>
   <%= form.text_field :title %></br>
   <%= form.text_area :content, id: "story",
